@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Countdown Timer</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    #timer {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    button {
+      margin: 0 10px;
+      padding: 10px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    input {
+      padding: 10px;
+      margin-bottom: 10px;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+  </style>
+</head>
+<body>
+
+<div id="timer">
+  <h1 id="display">00:00:00</h1>
+
+  <div>
+    <label for="manualInput">Set Time (HH:MM:SS): </label>
+    <input type="text" id="manualInput" placeholder="00:05:00">
+    <button onclick="startTimer()">Start</button>
+    <button onclick="stopTimer()">Stop</button>
+    <button onclick="resetTimer()">Reset</button>
+    <button onclick="restartTimer()">Restart</button>
+  </div>
+</div>
+
+<script>
+  let timer;
+  let timeInSeconds = 0; // Initial countdown time in seconds
+
+  function formatTime(seconds) {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const remainingSeconds = seconds % 60;
+
+    const formattedTime = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
+    return formattedTime;
+  }
+
+  function updateDisplay() {
+    document.getElementById('display').innerText = formatTime(timeInSeconds);
+  }
+
+  function startTimer() {
+    const userInput = document.getElementById('manualInput').value;
+    const timeArray = userInput.split(':').map(Number);
+
+    if (timeArray.length === 3) {
+      timeInSeconds = timeArray[0] * 3600 + timeArray[1] * 60 + timeArray[2];
+      updateDisplay();
+
+      timer = setInterval(function () {
+        if (timeInSeconds > 0) {
+          timeInSeconds--;
+          updateDisplay();
+        } else {
+          stopTimer();
+        }
+      }, 1000);
+    } else {
+      alert('Please enter the time in the format HH:MM:SS.');
+    }
+  }
+
+  function stopTimer() {
+    clearInterval(timer);
+  }
+
+  function resetTimer() {
+    stopTimer();
+    timeInSeconds = 0; // Reset to the initial countdown time
+    updateDisplay();
+    document.getElementById('manualInput').value = '';
+  }
+
+  function restartTimer() {
+    resetTimer();
+    startTimer();
+  }
+
+  updateDisplay(); // Initialize display on page load
+</script>
+
+</body>
+</html>
